@@ -7,15 +7,15 @@ const server = http.createServer(function (req, res) {
   const path = req.url;
   const method = req.method;
 
-  if (path === "/Exhibition") {
+  if (path === "/exhibitions") {
     if (method === "GET") {
       //메시지코드 : 200, 나는 json 형태의 응답을 보낼거야
       res.writeHead(200, { "Content-Type": "application/json" });
-      const Exhibition = JSON.stringify([
+      const exhibition = JSON.stringify([
         { name: "The Art of Banksy Online", exp: "아트 오브 뱅크시 온라인" },
       ]);
 
-      res.end(Exhibition);
+      res.end(exhibition);
     } else if (method === "POST") {
       res.end("등록하였습니다");
     }
