@@ -3,8 +3,9 @@ const cors = require("cors");
 const app = express();
 const models = require("./models");
 const exhibition = require("./models/exhibition");
-//방명록
 const visitor = require("./models/visitor");
+//클라우드 연결하려면
+//const port = process.env.PORT || 8080;
 const port = 8080;
 
 app.use(express.json()); //express에 대한 설정
