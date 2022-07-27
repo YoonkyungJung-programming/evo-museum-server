@@ -1,28 +1,154 @@
-var http = require("http"); //모듈 import
-var hostname = "127.0.0.1"; //내컴퓨터 주소 항상 127.0.0.1 이다
-var port = 8080;
+const express = require("express");
+const cors = require("cors");
+const app = express();
+const models = require("./models");
+const exhibition = require("./models/exhibition");
+//방명록
+const visitor = require("./models/visitor");
+const port = 8080;
 
-//http.createServer 를 통해 얻어진 결과같이 const server 에 저장되게 된다
-const server = http.createServer(function (req, res) {
-  const path = req.url;
-  const method = req.method;
+app.use(express.json()); //express에 대한 설정
+app.use(cors()); //이제 모든 브라우저에서 가능
 
-  if (path === "/exhibitions") {
-    if (method === "GET") {
-      //메시지코드 : 200, 나는 json 형태의 응답을 보낼거야
-      res.writeHead(200, { "Content-Type": "application/json" });
-      const exhibition = JSON.stringify([
-        { name: "The Art of Banksy Online", exp: "아트 오브 뱅크시 온라인" },
-      ]);
-
-      res.end(exhibition);
-    } else if (method === "POST") {
-      res.end("등록하였습니다");
-    }
-  }
-  res.end("Good Bye");
+//전체 전시 get
+app.get("/exhibitions", (req, res) => {
+  models.Exhibition.findAll({
+    //{order : [['createdAt','DESC']],} findAll 안에 넣으면 정렬가능
+    attributes: ["id", "name", "exp", "imageUrl", "createdAt"],
+  })
+    .then((result) => {
+      console.log("EXHIBITIONS :", result);
+      res.send({
+        exhibitions: result,
+      });
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(400).send("ERROR : 전체 전시 조회에 에러가 발생 ");
+    });
 });
 
-server.listen(port, hostname); //listen === 기다리고 있다
+//개별전시 :id  get
+app.get("/exhibitions/:id", (req, res) => {
+  const params = req.params;
+  const { id } = params;
 
-console.log("evo-museum server on!");
+  models.Exhibition.findOne({
+    where: {
+      id: id, //id가 일치하는 것 하나만 find 해라
+    },
+    attributes: ["id", "name", "exp2", "imageUrl2", "createdAt"],
+  })
+    .then((result1) => {
+      //
+      if (result1) {
+        models.Visitor.findAll({
+          where: {
+            exhibition_id: id,
+          },
+          attributes: ["visitor_name", "text", "createdAt"],
+        })
+          .then((result2) => {
+            console.log("EXHIBITION : ", exhibition);
+            console.log("Visitor : ", visitor);
+            res.send({
+              exhibition: result1,
+              visitor: result2,
+            });
+          })
+          .catch((error) => {
+            console.error(error);
+            res.send("개별 전시 Visitor 조회에 에러가 발생");
+          });
+      } //if
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(400).send("개별 전시 조회에 에러가 발생");
+    });
+});
+
+//전체 전시 post
+app.post("/exhibitions", (req, res) => {
+  const body = req.body;
+  //
+  //Database
+  const { name, exp, exp2, imageUrl, imageUrl2 } = body;
+
+  models.Exhibition.create({
+    name,
+    exp,
+    exp2,
+    imageUrl,
+    imageUrl2,
+  })
+    .then((result) => {
+      console.log("생성 결과 : ", result);
+      res.send({
+        result,
+      });
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(400).send("데이터베이스 Exhibition Data Create에 에러가 발생");
+    });
+
+  {
+    /** 
+  res.send({
+    body,
+  });
+  */
+  }
+});
+
+//방명록 게시
+app.post("/exhibitions/:id", (req, res) => {
+  const body = req.body;
+  //
+  //Database
+  const { exhibition_id, visitor_name, text } = body;
+
+  models.Visitor.create({
+    exhibition_id,
+    visitor_name,
+    text,
+  })
+    .then((result) => {
+      console.log("생성 결과 : ", result);
+      res.send({
+        result,
+      });
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(400).send("데이터베이스 Visitor Data Create에 에러가 발생");
+    });
+  {
+    /** 
+  res.send({
+    body,
+  });
+*/
+  }
+});
+// 방명록
+
+//listen
+app.listen(port, () => {
+  console.log("EVO-Museum Server ON : 서버 연결 성공");
+
+  //데이터베이스 동기화
+  models.sequelize
+    .sync()
+    .then(() => {
+      console.log("Database Connected : 데이터베이스 연결 성공");
+    })
+    .catch((err) => {
+      console.errror(err);
+      console.log(
+        "Database Connection Error : 데이터베이스 연결에 에러가 발생"
+      );
+      process.exit();
+    });
+});
