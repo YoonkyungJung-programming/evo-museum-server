@@ -40,6 +40,7 @@ app.get("/exhibitions/:id", (req, res) => {
     attributes: ["id", "name", "exp2", "imageUrl2", "createdAt"],
   })
     .then((result1) => {
+      //
       if (result1) {
         models.Visitor.findAll({
           where: {
@@ -101,7 +102,7 @@ app.post("/exhibitions", (req, res) => {
   }
 });
 
-//방명록 게시 (안되면 주석처리)
+//방명록 게시
 app.post("/exhibitions/:id", (req, res) => {
   const body = req.body;
   //
