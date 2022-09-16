@@ -20,6 +20,10 @@ module.exports = function (sequelize, DataTypes) {
       type: DataTypes.STRING(500),
       allowNull: false,
     },
+    unrealUrl: {
+      type: DataTypes.STRING(500),
+      allowNull: true,
+    },
   });
 
   return exhibition;

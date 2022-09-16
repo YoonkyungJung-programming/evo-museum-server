@@ -38,7 +38,7 @@ app.get("/exhibitions/:id", (req, res) => {
     where: {
       id: id, //id가 일치하는 것 하나만 find 해라
     },
-    attributes: ["id", "name", "exp2", "imageUrl2", "createdAt"],
+    attributes: ["id", "name", "exp2", "imageUrl2", "createdAt", "unrealUrl"],
   })
     .then((result1) => {
       //
@@ -74,7 +74,7 @@ app.post("/exhibitions", (req, res) => {
   const body = req.body;
   //
   //Database
-  const { name, exp, exp2, imageUrl, imageUrl2 } = body;
+  const { name, exp, exp2, imageUrl, imageUrl2, unrealUrl } = body;
 
   models.Exhibition.create({
     name,
@@ -82,6 +82,7 @@ app.post("/exhibitions", (req, res) => {
     exp2,
     imageUrl,
     imageUrl2,
+    unrealUrl,
   })
     .then((result) => {
       console.log("생성 결과 : ", result);
