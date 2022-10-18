@@ -15,7 +15,7 @@ app.use(cors()); //이제 모든 브라우저에서 가능
 app.get("/exhibitions", (req, res) => {
   models.Exhibition.findAll({
     //{order : [['createdAt','DESC']],} findAll 안에 넣으면 정렬가능
-    attributes: ["id", "name", "exp", "imageUrl", "createdAt"],
+    attributes: ["id", "name", "exp", "exp2", "imageUrl", "createdAt"],
   })
     .then((result) => {
       console.log("EXHIBITIONS :", result);
@@ -38,7 +38,7 @@ app.get("/exhibitions/:id", (req, res) => {
     where: {
       id: id, //id가 일치하는 것 하나만 find 해라
     },
-    attributes: ["id", "name", "exp2", "imageUrl2", "createdAt", "unrealUrl"],
+    attributes: ["id", "name", "imageUrl2", "createdAt", "unrealUrl"],
   })
     .then((result1) => {
       //
