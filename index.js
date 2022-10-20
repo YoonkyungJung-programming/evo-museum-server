@@ -4,9 +4,8 @@ const app = express();
 const models = require("./models");
 const exhibition = require("./models/exhibition");
 const visitor = require("./models/visitor");
-//클라우드 연결하려면
-//const port = process.env.PORT || 8080;
-const port = 8080;
+
+const port = process.env.PORT || 8080;
 
 app.use(express.json()); //express에 대한 설정
 app.use(cors()); //이제 모든 브라우저에서 가능
