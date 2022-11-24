@@ -93,14 +93,6 @@ app.post("/exhibitions", (req, res) => {
       console.error(error);
       res.status(400).send("데이터베이스 Exhibition Data Create에 에러가 발생");
     });
-
-  {
-    /** 
-  res.send({
-    body,
-  });
-  */
-  }
 });
 
 //방명록 게시
@@ -125,13 +117,6 @@ app.post("/exhibitions/:id", (req, res) => {
       console.error(error);
       res.status(400).send("데이터베이스 Visitor Data Create에 에러가 발생");
     });
-  {
-    /** 
-  res.send({
-    body,
-  });
-*/
-  }
 });
 // 방명록
 
